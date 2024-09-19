@@ -7,6 +7,10 @@ import SignPage from './pages/SignPage';
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <MainPage />,
+  },
+  {
+    path: "/sign",
     element: <SignPage />,
   },
 ]);
