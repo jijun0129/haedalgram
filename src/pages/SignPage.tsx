@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import iphone from "../assets/iphone.png";
 import logo from "../assets/logo.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SignInForm from "../components/sign/SignInForm";
 import SignUpForm from "../components/sign/SignUpForm";
+import useUserStore from "../store/userStore";
+import { useNavigate } from "react-router-dom";
 
 const Main = styled.main`
   width: 100vw;
@@ -70,10 +72,16 @@ const SwitchSpan = styled.span`
 `;
 
 const SignPage = () => {
-	//로그인 폼이 기본으로 표시
+  const { isLoggedIn } = useUserStore();
+  const navigate = useNavigate();
   const [isSignIn, setIsSignIn] = useState(true);
 
-	//전환 버튼이 클릭될 때마다 isSignIn 값을 반전시켜 폼을 전환
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
+
   const onClickSwitchSign = () => {
     setIsSignIn(!isSignIn);
   };
