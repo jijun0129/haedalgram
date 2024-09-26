@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Post from "../components/post/Post";
 import { TPost } from "../types";
+import AddPostButton from "../components/post/AddPostButton";
+import axios from "axios";
+import { HOST } from "../config";
 
 const Main = styled.main`
   width: 600px;
@@ -16,7 +19,7 @@ const Main = styled.main`
 const PostSection = styled.section``;
 
 const MainPage = () => {
-  const { isLoggedIn } = useUserStore();
+  const { isLoggedIn, user } = useUserStore();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Array<TPost>>([]);
 
@@ -27,130 +30,19 @@ const MainPage = () => {
   }, [isLoggedIn, navigate]);
 
   useEffect(() => {
-    setPosts([
-      {
-        id: 1,
-        user: {
-          id: 1,
-          username: "test",
-          imageData: "https://picsum.photos/200",
-          name: "test",
-        },
-        imageData: "https://picsum.photos/200",
-        content:
-          "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam veniam\n" +
-          "          doloremque aut rerum laboriosam, iste voluptate deleniti sunt\n" +
-          "          temporibus. Quae eligendi, error voluptatem ad suscipit commodi\n" +
-          "          explicabo maxime sapiente quasi.",
-        likeCount: 0,
-        isLike: false,
-        createdAt: "test",
-      },
-      {
-        id: 2,
-        user: {
-          id: 2,
-          username: "test2",
-          imageData: "https://picsum.photos/200",
-          name: "test",
-        },
-        imageData: "https://picsum.photos/200",
-        content:
-          "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam veniam\n" +
-          "          doloremque aut rerum laboriosam, iste voluptate deleniti sunt\n" +
-          "          temporibus. Quae eligendi, error voluptatem ad suscipit commodi\n" +
-          "          explicabo maxime sapiente quasi.",
-        likeCount: 0,
-        isLike: true,
-        createdAt: "test",
-      },
-      {
-        id: 3,
-        user: {
-          id: 3,
-          username: "test3",
-          imageData: "https://picsum.photos/200",
-          name: "test",
-        },
-        imageData: "https://picsum.photos/200",
-        content:
-          "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam veniam\n" +
-          "          doloremque aut rerum laboriosam, iste voluptate deleniti sunt\n" +
-          "          temporibus. Quae eligendi, error voluptatem ad suscipit commodi\n" +
-          "          explicabo maxime sapiente quasi.",
-        likeCount: 0,
-        isLike: false,
-        createdAt: "test",
-      },
-      {
-        id: 4,
-        user: {
-          id: 4,
-          username: "test4",
-          imageData: "https://picsum.photos/200",
-          name: "test",
-        },
-        imageData: "https://picsum.photos/200",
-        content:
-          "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam veniam\n" +
-          "          doloremque aut rerum laboriosam, iste voluptate deleniti sunt\n" +
-          "          temporibus. Quae eligendi, error voluptatem ad suscipit commodi\n" +
-          "          explicabo maxime sapiente quasi.",
-        likeCount: 0,
-        isLike: true,
-        createdAt: "test",
-      },
-      {
-        id: 5,
-        user: {
-          id: 5,
-          username: "test5",
-          imageData: "https://picsum.photos/200",
-          name: "test",
-        },
-        imageData: "https://picsum.photos/200",
-        content:
-          "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam veniam\n" +
-          "          doloremque aut rerum laboriosam, iste voluptate deleniti sunt\n" +
-          "          temporibus. Quae eligendi, error voluptatem ad suscipit commodi\n" +
-          "          explicabo maxime sapiente quasi.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam veniam\n" +
-          "          doloremque aut rerum laboriosam, iste voluptate deleniti sunt\n" +
-          "          temporibus. Quae eligendi, error voluptatem ad suscipit commodi\n" +
-          "          explicabo maxime sapiente quasi.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam veniam\n" +
-          "          doloremque aut rerum laboriosam, iste voluptate deleniti sunt\n" +
-          "          temporibus. Quae eligendi, error voluptatem ad suscipit commodi\n" +
-          "          explicabo maxime sapiente quasi.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam veniam\n" +
-          "          doloremque aut rerum laboriosam, iste voluptate deleniti sunt\n" +
-          "          temporibus. Quae eligendi, error voluptatem ad suscipit commodi\n" +
-          "          explicabo maxime sapiente quasi.",
-        likeCount: 0,
-        isLike: true,
-        createdAt: "test",
-      },
-      {
-        id: 5,
-        user: {
-          id: 4,
-          username: "test4",
-          imageData: "https://picsum.photos/200",
-          name: "test",
-        },
-        imageData: "https://picsum.photos/200",
-        content:
-          "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam veniam\n" +
-          "          doloremque aut rerum laboriosam, iste voluptate deleniti sunt\n" +
-          "          temporibus. Quae eligendi, error voluptatem ad suscipit commodi\n" +
-          "          explicabo maxime sapiente quasi.",
-        likeCount: 0,
-        isLike: true,
-        createdAt: "test",
-      },
-    ]);
-  }, []);
+    axios
+      .get(`${HOST}/posts/user/${user?.id}`, { withCredentials: true })
+      .then((res) => {
+        console.log(res);
+        setPosts(res.data);
+      });
+  }, [user?.id]);
 
+  //배열의 각 요소(즉, 각 포스트 객체)에 대해 Post 컴포넌트를 생성합니다.
   return (
     <>
       <Navigation />
+      <AddPostButton />
       <Main>
         <PostSection>
           {posts.map((post) => (

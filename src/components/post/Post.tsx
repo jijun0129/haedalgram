@@ -6,6 +6,8 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as solidHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as regularHeart } from "@fortawesome/free-regular-svg-icons/faHeart";
+import axios from "axios";
+import { HOST } from "../../config";
 
 const Div = styled.div`
   padding: 12px;
@@ -102,12 +104,39 @@ const Post = ({
   const [like, setLike] = useState(isLike);
   const [count, setCount] = useState(likeCount);
 
+  /*
+현재 좋아요 상태(like)가 false이면 서버에 좋아요 추가 요청을 보내고, 상태를 true로 변경합니다. 동시에 좋아요 수를 1 증가시킵니다.
+현재 좋아요 상태가 true이면 서버에 좋아요 취소 요청을 보내고, 상태를 false로 변경합니다. 동시에 좋아요 수를 1 감소시킵니다.
+*/
+
+  const onClickLike = () => {
+    if (!like) {
+      axios
+        .post(`${HOST}/posts/${id}/like`, null, { withCredentials: true })
+        .then(() => {
+          setLike(!like);
+          setCount(count + 1);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      axios
+        .delete(`${HOST}/posts/${id}/like`, { withCredentials: true })
+        .then(() => {
+          setLike(!like);
+          setCount(count - 1);
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
   return (
     <Div>
       <InfoDiv>
         <AuthorDiv>
           <StyledLink to={`/${user.id}`}>
-            <ProfileImage size="40px" src={user.imageData || ""} />
+            <ProfileImage size="40px" src={user.imageData} />
           </StyledLink>
           <StyledLink to={`/${user.id}`}>
             <AuthorSpan>{user.name}</AuthorSpan>
@@ -116,7 +145,7 @@ const Post = ({
         </AuthorDiv>
         <LikeDiv>
           <LikeCountP>{count}</LikeCountP>
-          <LikeButton>
+          <LikeButton onClick={onClickLike}>
             {like ? (
               <FontAwesomeIcon icon={solidHeart} size="xl" color="red" />
             ) : (
@@ -125,8 +154,8 @@ const Post = ({
           </LikeButton>
         </LikeDiv>
       </InfoDiv>
-      <ImageWrapperDiv>
-        <Image src={imageData} />
+      <ImageWrapperDiv onDoubleClick={onClickLike}>
+        <Image src={`data:image/;base64,${imageData}`} />
       </ImageWrapperDiv>
       <AuthorSpan>{user.name}</AuthorSpan>
       <ContentSpan>{content}</ContentSpan>
