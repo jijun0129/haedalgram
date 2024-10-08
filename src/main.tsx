@@ -1,9 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './global.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import SignPage from './pages/SignPage';
-import MainPage from './pages/MainPage';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./global.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import SignPage from "./pages/SignPage";
+import MainPage from "./pages/MainPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -14,10 +15,14 @@ const router = createBrowserRouter([
     path: "/sign",
     element: <SignPage />,
   },
+  {
+    path: "/:id",
+    element: <ProfilePage />,
+  },
 ]);
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>
-)
+  </React.StrictMode>
+);
